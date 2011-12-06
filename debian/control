@@ -1,0 +1,17 @@
+Source: operator-name-cbs-widget
+Priority: extra
+Maintainer: Jonathan Wilson <jfwfreo@tpgi.com.au>
+Build-Depends: debhelper (>= 5), autotools-dev, autoconf, libtool, libhildon1-dev, libhildondesktop1-dev, hildon-control-panel-dev, libgtk2.0-dev, libglib2.0-dev, libgconf2-dev, libosso-dev, libconnui-dev
+Standards-Version: 3.7.2
+Section: user/desktop
+
+Package: operator-name-cbs-widget
+Architecture: armel
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Conflicts: custom-operator-name-applet
+Replaces: custom-operator-name-applet
+Provides: custom-operator-name-applet
+Description: Operator name widget with Cell Broadcast SMS Message support.
+XB-Maemo-Display-Name: Operator Name Widget
+Xsbc-Bugtracker: mailto://jfwfreo@tpgi.com.au
+
