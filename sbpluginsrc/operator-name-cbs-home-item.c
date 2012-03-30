@@ -124,7 +124,7 @@ _dbus_message_filter_func(DBusConnection* connection,
 				ret = cbs_decode(pdu,88,&cbs);
 				l = g_slist_append(NULL, &cbs);
 				utf8 = cbs_decode_text(l, lang);
-				if (cbs.message_identifier == 50)
+				if (cbs.message_identifier == 50 && strncmp(utf8, "@@@@@", 5) != 0)
 				{
 					g_free(priv->cell_name);
 					priv->cell_name = g_strdup(utf8);
