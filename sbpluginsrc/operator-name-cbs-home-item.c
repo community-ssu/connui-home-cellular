@@ -521,6 +521,8 @@ set_label:
 			}
 			g_free(priv->display_name);
 			priv->display_name = g_strdup(oper);
+			gtk_label_set_text(GTK_LABEL(priv->label), priv->display_name);
+			gtk_widget_queue_draw(priv->label);
 			g_free(oper);
 			g_free(operator);
 			return;
