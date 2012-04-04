@@ -16,6 +16,12 @@ set -e
 
 case "$1" in
     install|upgrade)
+        # Remove bad dpkg-divert from version 0.1
+        # In version >= 0.2 is libsms.so not diverted
+        if test -f /usr/lib/libsms.so.0.0.0.distrib; then
+            rm -f /usr/lib/libsms.so.0.0.0
+            dpkg-divert --package operator-name-cbs-widget --rename --remove /usr/lib/libsms.so.0.0.0
+        fi
         dpkg-divert --package operator-name-cbs-widget --rename --add /usr/lib/hildon-desktop/connui-cellular-operator-home-item.so
     ;;
 
