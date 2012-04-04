@@ -40,6 +40,7 @@
 #define GET_SERVICE_PROVIDER_INFO "get_service_provider_info"
 
 #define OPERATOR_NAME_CBS_PATH "/apps/connui-cellular"
+#define OPERATOR_NAME_CBS_CHANNEL "/channel"
 #define OPERATOR_NAME_CBS_CBSMS_DISPLAY_ENABLED OPERATOR_NAME_CBS_PATH "/cbsms_display_enabled"
 #define OPERATOR_NAME_CBS_LOGGING_ENABLED OPERATOR_NAME_CBS_PATH "/logging_enabled"
 #define OPERATOR_NAME_CBS_NAME_LOGGING_ENABLED OPERATOR_NAME_CBS_PATH "/name_logging_enabled"
@@ -48,6 +49,7 @@
 gboolean cbslog = FALSE;
 gboolean namelog = FALSE;
 gboolean cbsms = FALSE;
+gint channel = 50;
 static void get_operator_name(OperatorNameCBSHomeItemPrivate *priv,struct network_state *state);
 
 struct _OperatorNameCBSHomeItemPrivate
@@ -124,7 +126,7 @@ _dbus_message_filter_func(DBusConnection* connection,
 				ret = cbs_decode(pdu,88,&cbs);
 				l = g_slist_append(NULL, &cbs);
 				utf8 = cbs_decode_text(l, lang);
-				if (cbs.message_identifier == 50 && strncmp(utf8, "@@@@@", 5) != 0)
+				if (cbs.message_identifier == channel && strncmp(utf8, "@@@@@", 5) != 0)
 				{
 					g_free(priv->cell_name);
 					priv->cell_name = g_strdup(utf8);
@@ -397,6 +399,20 @@ static void gconf_changed_func(GConfClient *gconf_client, guint cnxn_id, GConfEn
 			fclose(f);
 		}
 	}
+	else if (gconf_entry_get_value (entry) != NULL && gconf_entry_get_value (entry)->type == GCONF_VALUE_INT)
+	{
+		if (!strcmp(gconf_entry_get_key(entry),OPERATOR_NAME_CBS_CHANNEL))
+		{
+			channel = gconf_value_get_int(gconf_entry_get_value(entry));
+			if (channel <= 0) channel = 50;
+			if (cbslog)
+			{
+				FILE *f = fopen("/home/user/cbsms.log","at");
+				fprintf(f,"%scell broadcast channel changes to %d\n",get_timestamp(),channel);
+				fclose(f);
+			}
+		}
+	}
 }
 
 static void get_operator_name(OperatorNameCBSHomeItemPrivate *priv,struct network_state* state)
@@ -663,6 +679,8 @@ operator_name_cbs_home_item_init(OperatorNameCBSHomeItem* home_item)
 	}
 	cbslog = gconf_client_get_bool(home_item->priv->gconf_client, OPERATOR_NAME_CBS_LOGGING_ENABLED, NULL);
 	namelog = gconf_client_get_bool(home_item->priv->gconf_client, OPERATOR_NAME_CBS_NAME_LOGGING_ENABLED, NULL);
+	channel = gconf_client_get_int(home_item->priv->gconf_client, OPERATOR_NAME_CBS_CHANNEL, NULL);
+	if (channel <= 0) channel = 50;
 	if (namelog)
 	{
 		FILE *f = fopen("/home/user/opername.log","at");
@@ -681,6 +699,7 @@ operator_name_cbs_home_item_init(OperatorNameCBSHomeItem* home_item)
 		FILE *f = fopen("/home/user/cbsms.log","at");
 		fprintf(f,"%scbsms logging enabled\n",get_timestamp());
 		fprintf(f,"%sinit clear cell name\n",get_timestamp());
+		fprintf(f,"%slistening on channel %d\n",get_timestamp(),channel);
 		fclose(f);
 	}
 }
