@@ -1,3 +1,11 @@
+operator-name-cbs-widget (0.2) unstable; urgency=low
+
+  * Ignore cell name if starts with @@@@@
+  * Fixed problem when sometime operator name is not shown
+  * Fixed problem with upgrading, removing and purging package
+
+ -- Pali Rohár <pali.rohar@gmail.com>  Wed, 04 Apr 2012 14:59:40 +0200
+
 operator-name-cbs-widget (0.1) unstable; urgency=low
 
   * Initial Release.

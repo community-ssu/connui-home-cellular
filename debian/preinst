@@ -16,9 +16,7 @@ set -e
 
 case "$1" in
     install|upgrade)
-	cp /usr/lib/libsms.so.0.0.0 /usr/lib/libsms.so.x
-    dpkg-divert --package operator-name-cbs-widget --add --rename /usr/lib/hildon-desktop/connui-cellular-operator-home-item.so
-    dpkg-divert --package operator-name-cbs-widget --add --rename /usr/lib/libsms.so.0.0.0
+        dpkg-divert --package operator-name-cbs-widget --rename --add /usr/lib/hildon-desktop/connui-cellular-operator-home-item.so
     ;;
 
     abort-upgrade)

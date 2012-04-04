@@ -23,7 +23,8 @@
 
 int main()
 {
-	FILE *f = fopen("/usr/lib/libsms.so.x","r+");
+	FILE *f = fopen("/usr/lib/libsms.so.0.0.0","r+");
+	if (!f) return 1;
 	fseek(f,0xDD78,SEEK_SET);
 	unsigned char c = 0x52;
 	fwrite(&c,1,1,f);

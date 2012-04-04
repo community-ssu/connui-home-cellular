@@ -20,26 +20,15 @@ set -e
 
 
 case "$1" in
-    purge|remove|upgrade|failed-upgrade|abort-install|abort-upgrade|disappear)
-    dpkg-divert --package operator-name-cbs-widget --remove --rename /usr/lib/hildon-desktop/connui-cellular-operator-home-item.so
-    rm /usr/lib/libsms.so.0.0.0
-    dpkg-divert --package operator-name-cbs-widget --remove --rename /usr/lib/libsms.so.0.0.0
-	if [ -r /etc/osso-af-init/af-defines.sh ]; then
-	  source /etc/osso-af-init/af-defines.sh
-	fi
-
-	if [ -x /usr/bin/dbus-send ]; then
-	  dbus-send --type=method_call --dest=org.freedesktop.Notifications /org/freedesktop/Notifications org.freedesktop.Notifications.SystemNoteInfoprint string:"Restart to restore original widget."
-	fi
+    purge|remove)
+        dpkg-divert --package operator-name-cbs-widget --rename --remove /usr/lib/hildon-desktop/connui-cellular-operator-home-item.so
+        if test -f /usr/lib/libsms.so.0.0.0.old; then
+            mv /usr/lib/libsms.so.0.0.0.old /usr/lib/libsms.so.0.0.0
+            run-standalone.sh dbus-send --type=method_call --dest=org.freedesktop.Notifications /org/freedesktop/Notifications org.freedesktop.Notifications.SystemNoteInfoprint string:"Restart to restore original widget."
+        fi
     ;;
 
-    upgrade)
-    ;;
-
-    failed-upgrade)
-    ;;
-
-    abort-upgrade)
+    upgrade|failed-upgrade|abort-install|abort-upgrade|disappear)
     ;;
 
     *)

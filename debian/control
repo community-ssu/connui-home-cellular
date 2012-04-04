@@ -7,11 +7,12 @@ Section: user/desktop
 
 Package: operator-name-cbs-widget
 Architecture: armel
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends: libconnui, libconnui-cellular, ${shlibs:Depends}, ${misc:Depends}
 Conflicts: custom-operator-name-applet
 Replaces: custom-operator-name-applet
 Provides: custom-operator-name-applet
 Description: Operator name widget with Cell Broadcast SMS Message support.
+ This widget is replacement for stock Operator name widget. It has additional
+ support for Cell Broadcast SMS which show for example Cellular network info.
 XB-Maemo-Display-Name: Operator Name Widget
-Xsbc-Bugtracker: mailto://jfwfreo@tpgi.com.au
-
+Xsbc-Bugtracker: mailto:jfwfreo@tpgi.com.au
