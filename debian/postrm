@@ -22,8 +22,8 @@ set -e
 case "$1" in
     purge|remove)
         dpkg-divert --package operator-name-cbs-widget --rename --remove /usr/lib/hildon-desktop/connui-cellular-operator-home-item.so
-        if test -f /usr/lib/libsms.so.0.0.0.old; then
-            mv /usr/lib/libsms.so.0.0.0.old /usr/lib/libsms.so.0.0.0
+        if test -f /usr/lib/libsms.so.old.0.0.0; then
+            mv /usr/lib/libsms.so.old.0.0.0 /usr/lib/libsms.so.0.0.0
             run-standalone.sh dbus-send --type=method_call --dest=org.freedesktop.Notifications /org/freedesktop/Notifications org.freedesktop.Notifications.SystemNoteInfoprint string:"Restart to restore original widget."
         fi
     ;;

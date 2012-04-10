@@ -21,7 +21,7 @@ set -e
 case "$1" in
     configure)
         if [ "$(md5sum /usr/lib/libsms.so.0.0.0 | cut -d' ' -f1)" = "6d9560f64f97dd18ccbd3119229717ae" ]; then
-            cp /usr/lib/libsms.so.0.0.0 /usr/lib/libsms.so.0.0.0.old
+            cp /usr/lib/libsms.so.0.0.0 /usr/lib/libsms.so.old.0.0.0
             cbspatch
             run-standalone.sh dbus-send --type=method_call --dest=org.freedesktop.Notifications /org/freedesktop/Notifications org.freedesktop.Notifications.SystemNoteInfoprint string:"Restart to complete install. Settings are in Control Panel."
         fi
