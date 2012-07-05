@@ -1,6 +1,7 @@
 /*
  *  operator-name-cbs-cpa (control panel plugin)
  *  Copyright (C) 2011 Nicolai Hess/Jonathan Wilson
+ *  Copyright (C) 2012 Pali Rohár <pali.rohar@gmail.com>
  *  
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -44,25 +45,25 @@ osso_return_t execute(osso_context_t *osso,
 	GtkWidget* cbsms_enabled = hildon_check_button_new(HILDON_SIZE_FINGER_HEIGHT);
 	GtkWidget* label = gtk_label_new("Cell Broadcast Channel:");
 	GtkWidget* cbsms_channel = hildon_entry_new(HILDON_SIZE_AUTO);
-	GtkWidget* log_enabled = hildon_check_button_new(HILDON_SIZE_FINGER_HEIGHT);
-	GtkWidget* name_log_enabled = hildon_check_button_new(HILDON_SIZE_FINGER_HEIGHT);
+//	GtkWidget* log_enabled = hildon_check_button_new(HILDON_SIZE_FINGER_HEIGHT);
+//	GtkWidget* name_log_enabled = hildon_check_button_new(HILDON_SIZE_FINGER_HEIGHT);
 	gint i_channel = gconf_client_get_int(gconf_client, OPERATOR_NAME_CBS_CHANNEL, NULL);
 	if (i_channel <= 0) i_channel = 50;
 	gchar* s_channel = g_strdup_printf("%i", i_channel);
 	gtk_button_set_label(GTK_BUTTON(cbsms_enabled),"Cell Broadcast Enabled");
 	gtk_entry_set_text(GTK_ENTRY(cbsms_channel),s_channel);
 	g_object_set(G_OBJECT(cbsms_channel),"hildon-input-mode",HILDON_GTK_INPUT_MODE_NUMERIC,NULL);
-	gtk_button_set_label(GTK_BUTTON(log_enabled),"Logging Enabled");
-	gtk_button_set_label(GTK_BUTTON(name_log_enabled),"Name Logging Enabled");
+//	gtk_button_set_label(GTK_BUTTON(log_enabled),"Logging Enabled");
+//	gtk_button_set_label(GTK_BUTTON(name_log_enabled),"Name Logging Enabled");
 	hildon_check_button_set_active(HILDON_CHECK_BUTTON(cbsms_enabled),gconf_client_get_bool(gconf_client, OPERATOR_NAME_CBS_CBSMS_DISPLAY_ENABLED, NULL));
-	hildon_check_button_set_active(HILDON_CHECK_BUTTON(log_enabled),gconf_client_get_bool(gconf_client, OPERATOR_NAME_CBS_LOGGING_ENABLED, NULL));
-	hildon_check_button_set_active(HILDON_CHECK_BUTTON(name_log_enabled),gconf_client_get_bool(gconf_client, OPERATOR_NAME_CBS_NAME_LOGGING_ENABLED, NULL));
+//	hildon_check_button_set_active(HILDON_CHECK_BUTTON(log_enabled),gconf_client_get_bool(gconf_client, OPERATOR_NAME_CBS_LOGGING_ENABLED, NULL));
+//	hildon_check_button_set_active(HILDON_CHECK_BUTTON(name_log_enabled),gconf_client_get_bool(gconf_client, OPERATOR_NAME_CBS_NAME_LOGGING_ENABLED, NULL));
 	gtk_box_pack_start(GTK_BOX(hbox), label, TRUE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), cbsms_channel, TRUE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(box), cbsms_enabled, TRUE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(box), hbox, TRUE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(box), log_enabled, TRUE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(box), name_log_enabled, TRUE, FALSE, 0);
+//	gtk_box_pack_start(GTK_BOX(box), log_enabled, TRUE, FALSE, 0);
+//	gtk_box_pack_start(GTK_BOX(box), name_log_enabled, TRUE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), box, TRUE, TRUE, 0);
 	gtk_widget_show_all(dialog);
 	guint response = gtk_dialog_run(GTK_DIALOG(dialog));
@@ -72,8 +73,8 @@ osso_return_t execute(osso_context_t *osso,
 		if (i_channel <= 0) i_channel = 50;
 		gconf_client_set_bool(gconf_client,OPERATOR_NAME_CBS_CBSMS_DISPLAY_ENABLED,hildon_check_button_get_active(HILDON_CHECK_BUTTON(cbsms_enabled)),NULL);
 		gconf_client_set_int(gconf_client,OPERATOR_NAME_CBS_CHANNEL,i_channel,NULL);
-		gconf_client_set_bool(gconf_client,OPERATOR_NAME_CBS_LOGGING_ENABLED,hildon_check_button_get_active(HILDON_CHECK_BUTTON(log_enabled)),NULL);
-		gconf_client_set_bool(gconf_client,OPERATOR_NAME_CBS_NAME_LOGGING_ENABLED,hildon_check_button_get_active(HILDON_CHECK_BUTTON(name_log_enabled)),NULL);
+//		gconf_client_set_bool(gconf_client,OPERATOR_NAME_CBS_LOGGING_ENABLED,hildon_check_button_get_active(HILDON_CHECK_BUTTON(log_enabled)),NULL);
+//		gconf_client_set_bool(gconf_client,OPERATOR_NAME_CBS_NAME_LOGGING_ENABLED,hildon_check_button_get_active(HILDON_CHECK_BUTTON(name_log_enabled)),NULL);
 	}
 	gtk_widget_destroy(dialog);
 	g_object_unref(gconf_client);
