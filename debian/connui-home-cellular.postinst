@@ -20,10 +20,22 @@ set -e
 
 case "$1" in
     configure)
+        # Remove bad dpkg-divert from version 0.1
+        # In version >= 0.2 is libsms.so not diverted
+        if test -f /usr/lib/libsms.so.0.0.0.distrib; then
+            rm -f /usr/lib/libsms.so.0.0.0
+            dpkg-divert --package operator-name-cbs-widget --rename --remove /usr/lib/libsms.so.0.0.0
+        fi
+        # Remove bad dpkg-divert from version 0.2
+        # In version >= 3.0 is connui-cellular-operator-home-item.so in standard package connui-home-cellular
+        if test -f /usr/lib/hildon-desktop/connui-cellular-operator-home-item.so.distrib && dpkg-divert --list operator-name-cbs-widget | grep -q '/usr/lib/hildon-desktop/connui-cellular-operator-home-item.so.distrib'; then
+            rm -f /usr/lib/hildon-desktop/connui-cellular-operator-home-item.so
+            dpkg-divert --package operator-name-cbs-widget --rename --remove /usr/lib/hildon-desktop/connui-cellular-operator-home-item.so
+        fi
+        # Patch libsms for broadcast sms support
         if [ "$(md5sum /usr/lib/libsms.so.0.0.0 | cut -d' ' -f1)" = "6d9560f64f97dd18ccbd3119229717ae" ]; then
             cp /usr/lib/libsms.so.0.0.0 /usr/lib/libsms.so.old.0.0.0
             cbspatch
-            run-standalone.sh dbus-send --type=method_call --dest=org.freedesktop.Notifications /org/freedesktop/Notifications org.freedesktop.Notifications.SystemNoteInfoprint string:"Restart to complete install. Settings are in Control Panel."
         fi
     ;;
 

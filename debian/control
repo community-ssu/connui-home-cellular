@@ -1,18 +1,25 @@
 Source: operator-name-cbs-widget
 Priority: extra
-Maintainer: Jonathan Wilson <jfwfreo@tpgi.com.au>
+Maintainer: Pali Rohár <pali.rohar@gmail.com>
 Build-Depends: debhelper (>= 5), autotools-dev, autoconf, libtool, libhildon1-dev, libhildondesktop1-dev, hildon-control-panel-dev, libgtk2.0-dev, libglib2.0-dev, libgconf2-dev, libosso-dev, libconnui-dev
 Standards-Version: 3.7.2
-Section: user/desktop
+Section: x11
+
+Package: connui-home-cellular
+Architecture: armel
+Depends: libconnui, libconnui-cellular, ${shlibs:Depends}, ${misc:Depends}
+Conflicts: operator-name-cbs-widget (<< 3.0)
+Replaces: operator-name-cbs-widget (<< 3.0)
+Description: Cellular UI operator name home plugin
+ Home plugin for showing the current cellular operator.
+ .
+ It has additional support for Cell Broadcast SMS
+ which show for example Cellular network info.
 
 Package: operator-name-cbs-widget
 Architecture: armel
-Depends: libconnui, libconnui-cellular, ${shlibs:Depends}, ${misc:Depends}
-Conflicts: custom-operator-name-applet
-Replaces: custom-operator-name-applet
-Provides: custom-operator-name-applet
-Description: Operator name widget with Cell Broadcast SMS Message support.
- This widget is replacement for stock Operator name widget. It has additional
- support for Cell Broadcast SMS which show for example Cellular network info.
-XB-Maemo-Display-Name: Operator Name Widget
-Xsbc-Bugtracker: mailto:jfwfreo@tpgi.com.au
+Depends: connui-home-cellular
+Description: Transitional package
+ This dummy package is provided for a smooth transition to the connui-home-cellular.
+ .
+ It may safely be removed after installation.

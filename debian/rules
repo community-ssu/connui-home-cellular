@@ -11,7 +11,7 @@ DEB_BUILD_GNU_TYPE  ?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
 
 CFLAGS = -Wall -g
 
-DESTDIR = $(CURDIR)/debian/operator-name-cbs-widget
+DESTDIR = $(CURDIR)/debian/connui-home-cellular
 
 ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
 	CFLAGS += -O0
