@@ -40,7 +40,7 @@
 #define GET_SERVICE_PROVIDER_INFO "get_service_provider_info"
 
 #define OPERATOR_NAME_CBS_PATH "/apps/connui-cellular"
-#define OPERATOR_NAME_CBS_CHANNEL "/channel"
+#define OPERATOR_NAME_CBS_CHANNEL OPERATOR_NAME_CBS_PATH "/channel"
 #define OPERATOR_NAME_CBS_CBSMS_DISPLAY_ENABLED OPERATOR_NAME_CBS_PATH "/cbsms_display_enabled"
 #define OPERATOR_NAME_CBS_LOGGING_ENABLED OPERATOR_NAME_CBS_PATH "/logging_enabled"
 #define OPERATOR_NAME_CBS_NAME_LOGGING_ENABLED OPERATOR_NAME_CBS_PATH "/name_logging_enabled"

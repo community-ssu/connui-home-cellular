@@ -5,6 +5,7 @@ operator-name-cbs-widget (3.0) unstable; urgency=low
   * Fix problem that custom-operator-name-applet is not possible to install
   * Remove debug log buttons from control panel plugin (enabling logs via gconf still working)
   * Remove postrm and preinst scripts which are not needed
+  * Move gconf channel key to global gconf dir /apps/connui-cellular
 
  -- Pali Rohár <pali.rohar@gmail.com>  Thu, 05 Jul 2012 16:39:48 +0200
 
