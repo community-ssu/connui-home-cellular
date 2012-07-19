@@ -9,7 +9,6 @@ Package: connui-home-cellular
 Architecture: armel
 Depends: libconnui, libconnui-cellular, ${shlibs:Depends}, ${misc:Depends}
 Conflicts: operator-name-cbs-widget (<< 3.0)
-Replaces: operator-name-cbs-widget (<< 3.0)
 Description: Cellular UI operator name home plugin
  Home plugin for showing the current cellular operator.
  .
