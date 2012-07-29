@@ -30,6 +30,7 @@
 #define OPERATOR_NAME_CBS_PATH "/apps/connui-cellular"
 #define OPERATOR_NAME_CBS_CBSMS_DISPLAY_ENABLED OPERATOR_NAME_CBS_PATH "/cbsms_display_enabled"
 #define OPERATOR_NAME_CBS_CHANNEL OPERATOR_NAME_CBS_PATH "/channel"
+#define OPERATOR_NAME_CBS_CUSTOM_NAME OPERATOR_NAME_CBS_PATH "/custom_name"
 #define OPERATOR_NAME_CBS_LOGGING_ENABLED OPERATOR_NAME_CBS_PATH "/logging_enabled"
 #define OPERATOR_NAME_CBS_NAME_LOGGING_ENABLED OPERATOR_NAME_CBS_PATH "/name_logging_enabled"
 
@@ -44,12 +45,19 @@ osso_return_t execute(osso_context_t *osso,
 	GtkWidget* hbox = gtk_hbox_new(TRUE, 0);
 	GtkWidget* cbsms_enabled = hildon_check_button_new(HILDON_SIZE_FINGER_HEIGHT);
 	GtkWidget* label = gtk_label_new("Cell Broadcast Channel:");
+	GtkWidget* label2 = gtk_label_new("Custom Operator Name:");
+	GtkWidget* oper_name = hildon_entry_new(HILDON_SIZE_AUTO);
 	GtkWidget* cbsms_channel = hildon_entry_new(HILDON_SIZE_AUTO);
 //	GtkWidget* log_enabled = hildon_check_button_new(HILDON_SIZE_FINGER_HEIGHT);
 //	GtkWidget* name_log_enabled = hildon_check_button_new(HILDON_SIZE_FINGER_HEIGHT);
 	gint i_channel = gconf_client_get_int(gconf_client, OPERATOR_NAME_CBS_CHANNEL, NULL);
 	if (i_channel <= 0) i_channel = 50;
 	gchar* s_channel = g_strdup_printf("%i", i_channel);
+	gchar* on = gconf_client_get_string(gconf_client, OPERATOR_NAME_CBS_CUSTOM_NAME,NULL);
+	if (on && on[0])
+	{
+		gtk_entry_set_text(GTK_ENTRY(oper_name),on);
+	}
 	gtk_button_set_label(GTK_BUTTON(cbsms_enabled),"Cell Broadcast Enabled");
 	gtk_entry_set_text(GTK_ENTRY(cbsms_channel),s_channel);
 	g_object_set(G_OBJECT(cbsms_channel),"hildon-input-mode",HILDON_GTK_INPUT_MODE_NUMERIC,NULL);
@@ -62,6 +70,8 @@ osso_return_t execute(osso_context_t *osso,
 	gtk_box_pack_start(GTK_BOX(hbox), cbsms_channel, TRUE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(box), cbsms_enabled, TRUE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(box), hbox, TRUE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(box), label2, TRUE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(box), oper_name, TRUE, FALSE, 0);
 //	gtk_box_pack_start(GTK_BOX(box), log_enabled, TRUE, FALSE, 0);
 //	gtk_box_pack_start(GTK_BOX(box), name_log_enabled, TRUE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), box, TRUE, TRUE, 0);
@@ -71,6 +81,15 @@ osso_return_t execute(osso_context_t *osso,
 	{
 		i_channel = atoi(gtk_entry_get_text(GTK_ENTRY(cbsms_channel)));
 		if (i_channel <= 0) i_channel = 50;
+		const gchar *on = gtk_entry_get_text(GTK_ENTRY(oper_name));
+		if (on && on[0])
+		{
+			gconf_client_set_string(gconf_client,OPERATOR_NAME_CBS_CUSTOM_NAME,on,NULL);
+		}
+		else
+		{
+			gconf_client_set_string(gconf_client,OPERATOR_NAME_CBS_CUSTOM_NAME,"",NULL);
+		}
 		gconf_client_set_bool(gconf_client,OPERATOR_NAME_CBS_CBSMS_DISPLAY_ENABLED,hildon_check_button_get_active(HILDON_CHECK_BUTTON(cbsms_enabled)),NULL);
 		gconf_client_set_int(gconf_client,OPERATOR_NAME_CBS_CHANNEL,i_channel,NULL);
 //		gconf_client_set_bool(gconf_client,OPERATOR_NAME_CBS_LOGGING_ENABLED,hildon_check_button_get_active(HILDON_CHECK_BUTTON(log_enabled)),NULL);

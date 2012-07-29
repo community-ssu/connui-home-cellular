@@ -41,6 +41,7 @@
 
 #define OPERATOR_NAME_CBS_PATH "/apps/connui-cellular"
 #define OPERATOR_NAME_CBS_CHANNEL OPERATOR_NAME_CBS_PATH "/channel"
+#define OPERATOR_NAME_CBS_CUSTOM_NAME OPERATOR_NAME_CBS_PATH "/custom_name"
 #define OPERATOR_NAME_CBS_CBSMS_DISPLAY_ENABLED OPERATOR_NAME_CBS_PATH "/cbsms_display_enabled"
 #define OPERATOR_NAME_CBS_LOGGING_ENABLED OPERATOR_NAME_CBS_PATH "/logging_enabled"
 #define OPERATOR_NAME_CBS_NAME_LOGGING_ENABLED OPERATOR_NAME_CBS_PATH "/name_logging_enabled"
@@ -60,6 +61,7 @@ struct _OperatorNameCBSHomeItemPrivate
 	gchar* display_name;
 	gchar* operator_name;
 	gchar* service_provider_name;
+	gchar* custom_name;
 	gchar reg_status;
 	gchar rat_name;
 	gchar *operator_code;
@@ -131,7 +133,12 @@ _dbus_message_filter_func(DBusConnection* connection,
 					g_free(priv->cell_name);
 					priv->cell_name = g_strdup(utf8);
 					priv->name = FALSE;
-					char *name = g_strdup_printf("%s %s",priv->display_name,priv->cell_name);
+					gchar *dn = priv->display_name;
+					if (priv->custom_name)
+					{
+						dn = priv->custom_name;
+					}
+					char *name = g_strdup_printf("%s %s",dn,priv->cell_name);
 					gtk_label_set_text(GTK_LABEL(priv->label), name);
 					gtk_widget_queue_draw(priv->label);
 					DBusGProxy *dbus_g_proxy = dbus_g_proxy_new_for_name(priv->dbus_conn, PHONE_NET_SERVICE, PHONE_NET_PATH, PHONE_NET_IFACE);
@@ -211,7 +218,12 @@ static void widget_flightmode_cb(gboolean offline, gpointer user_data)
 				priv->rat_name = -1;
 				priv->cell_id = -1;
 				priv->name = FALSE;
-				gtk_label_set_text(GTK_LABEL(priv->label), priv->display_name);
+				gchar *dn = priv->display_name;
+				if (priv->custom_name)
+				{
+					dn = priv->custom_name;
+				}
+				gtk_label_set_text(GTK_LABEL(priv->label), dn);
 				gtk_widget_queue_draw(priv->label);
 			}
 			priv->flightmode = offline;
@@ -229,6 +241,13 @@ static gboolean name_handler(gpointer user_data)
 		{
 			g_free(priv->cell_name);
 			priv->cell_name = g_strdup("");
+			gchar *dn = priv->display_name;
+			if (priv->custom_name)
+			{
+				dn = priv->custom_name;
+			}
+			gtk_label_set_text(GTK_LABEL(priv->label), dn);
+			gtk_widget_queue_draw(priv->label);
 		}
 	}
 	return FALSE;
@@ -255,7 +274,12 @@ static void widget_net_status_cb(struct network_state *state, gpointer user_data
 				priv->cell_name = g_strdup("");
 				g_free(priv->display_name);
 				priv->display_name = g_strdup("");
-				gtk_label_set_text(GTK_LABEL(priv->label), priv->display_name);
+				gchar *dn = priv->display_name;
+				if (priv->custom_name)
+				{
+					dn = priv->custom_name;
+				}
+				gtk_label_set_text(GTK_LABEL(priv->label), dn);
 				gtk_widget_queue_draw(priv->label);
 				g_free(priv->operator_code);
 				priv->operator_code = g_strdup("");
@@ -277,7 +301,12 @@ static void widget_net_status_cb(struct network_state *state, gpointer user_data
 					priv->status = state->network->network_service_status;
 					g_free(priv->cell_name);
 					priv->cell_name = g_strdup("");
-					gtk_label_set_text(GTK_LABEL(priv->label), priv->display_name);
+					gchar *dn = priv->display_name;
+					if (priv->custom_name)
+					{
+						dn = priv->custom_name;
+					}
+					gtk_label_set_text(GTK_LABEL(priv->label), dn);
 					gtk_widget_queue_draw(priv->label);
 					priv->cell_id = -1;
 					priv->rat_name = -1;
@@ -296,7 +325,12 @@ static void widget_net_status_cb(struct network_state *state, gpointer user_data
 					get_operator_name(priv,state);
 					g_free(priv->cell_name);
 					priv->cell_name = g_strdup("");
-					gtk_label_set_text(GTK_LABEL(priv->label), priv->display_name);
+					gchar *dn = priv->display_name;
+					if (priv->custom_name)
+					{
+						dn = priv->custom_name;
+					}
+					gtk_label_set_text(GTK_LABEL(priv->label), dn);
 					gtk_widget_queue_draw(priv->label);
 					priv->cell_id = -1;
 					priv->rat_name = -1;
@@ -314,7 +348,12 @@ static void widget_net_status_cb(struct network_state *state, gpointer user_data
 				priv->rat_name = state->rat_name;
 				g_free(priv->cell_name);
 				priv->cell_name = g_strdup("");
-				gtk_label_set_text(GTK_LABEL(priv->label), priv->display_name);
+				gchar *dn = priv->display_name;
+				if (priv->custom_name)
+				{
+					dn = priv->custom_name;
+				}
+				gtk_label_set_text(GTK_LABEL(priv->label), dn);
 				gtk_widget_queue_draw(priv->label);
 				priv->cell_id = -1;
 				priv->name = FALSE;
@@ -354,7 +393,7 @@ _set_dbus_filter_func(DBusConnection* conn, OperatorNameCBSHomeItem* plugin)
 	}
 }
 
-static void gconf_changed_func(GConfClient *gconf_client, guint cnxn_id, GConfEntry *entry, OperatorNameCBSHomeItem* home_item)
+void gconf_changed_func(GConfClient *gconf_client, guint cnxn_id, GConfEntry *entry, OperatorNameCBSHomeItem* home_item)
 {
 	if (gconf_entry_get_value (entry) != NULL && gconf_entry_get_value (entry)->type == GCONF_VALUE_BOOL)
 	{
@@ -378,7 +417,12 @@ static void gconf_changed_func(GConfClient *gconf_client, guint cnxn_id, GConfEn
 				{
 					g_free(home_item->priv->cell_name);
 					home_item->priv->cell_name = g_strdup("");
-					gtk_label_set_text(GTK_LABEL(home_item->priv->label), home_item->priv->display_name);
+					gchar *dn = home_item->priv->display_name;
+					if (home_item->priv->custom_name)
+					{
+						dn = home_item->priv->custom_name;
+					}
+					gtk_label_set_text(GTK_LABEL(home_item->priv->label), dn);
 					gtk_widget_queue_draw(home_item->priv->label);
 					_disable_dbus_filter_func(dbus_g_connection_get_connection(home_item->priv->dbus_conn), home_item);
 				}
@@ -413,6 +457,36 @@ static void gconf_changed_func(GConfClient *gconf_client, guint cnxn_id, GConfEn
 			}
 		}
 	}
+	else if (gconf_entry_get_value (entry) != NULL && gconf_entry_get_value (entry)->type == GCONF_VALUE_STRING)
+	{
+		if (!strcmp(gconf_entry_get_key(entry),OPERATOR_NAME_CBS_CUSTOM_NAME))
+		{
+			const gchar *on = gconf_value_get_string(gconf_entry_get_value(entry));
+			g_free(home_item->priv->custom_name);
+			if (on && on[0])
+			{
+				home_item->priv->custom_name = g_strdup(on);
+			}
+			else
+			{
+				home_item->priv->custom_name = 0;
+			}
+			gchar *dn = home_item->priv->display_name;
+			if (home_item->priv->custom_name)
+			{
+				dn = home_item->priv->custom_name;
+			}
+			if (home_item->priv->cell_name && home_item->priv->cell_name[0]) 			{
+				char *name = g_strdup_printf("%s %s",dn,home_item->priv->cell_name);
+				gtk_label_set_text(GTK_LABEL(home_item->priv->label), name);
+			}
+			else
+			{
+				gtk_label_set_text(GTK_LABEL(home_item->priv->label), dn);
+			}
+			gtk_widget_queue_draw(home_item->priv->label);
+		}
+	}
 }
 
 static void get_operator_name(OperatorNameCBSHomeItemPrivate *priv,struct network_state* state)
@@ -423,7 +497,7 @@ static void get_operator_name(OperatorNameCBSHomeItemPrivate *priv,struct networ
 		fprintf(f,"%sStart Operator Name\n",get_timestamp());
 		fclose(f);
 	}
-	if (state->operator_name && state->operator_name[0])
+	if (state->operator_name)
 	{
 		if (namelog)
 		{
@@ -537,7 +611,12 @@ set_label:
 			}
 			g_free(priv->display_name);
 			priv->display_name = g_strdup(oper);
-			gtk_label_set_text(GTK_LABEL(priv->label), priv->display_name);
+			gchar *dn = priv->display_name;
+			if (priv->custom_name)
+			{
+				dn = priv->custom_name;
+			}
+			gtk_label_set_text(GTK_LABEL(priv->label), dn);
 			gtk_widget_queue_draw(priv->label);
 			g_free(oper);
 			g_free(operator);
@@ -680,6 +759,12 @@ operator_name_cbs_home_item_init(OperatorNameCBSHomeItem* home_item)
 	cbslog = gconf_client_get_bool(home_item->priv->gconf_client, OPERATOR_NAME_CBS_LOGGING_ENABLED, NULL);
 	namelog = gconf_client_get_bool(home_item->priv->gconf_client, OPERATOR_NAME_CBS_NAME_LOGGING_ENABLED, NULL);
 	channel = gconf_client_get_int(home_item->priv->gconf_client, OPERATOR_NAME_CBS_CHANNEL, NULL);
+	home_item->priv->custom_name = 0;
+	gchar *on = gconf_client_get_string(home_item->priv->gconf_client, OPERATOR_NAME_CBS_CUSTOM_NAME,NULL);
+	if (on && on[0])
+	{
+		home_item->priv->custom_name = g_strdup(on);
+	}
 	if (channel <= 0) channel = 50;
 	if (namelog)
 	{
