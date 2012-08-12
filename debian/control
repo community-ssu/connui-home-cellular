@@ -1,7 +1,7 @@
 Source: operator-name-cbs-widget
 Priority: extra
 Maintainer: Pali Rohár <pali.rohar@gmail.com>
-Build-Depends: debhelper (>= 5), autotools-dev, autoconf, libtool, libhildon1-dev, libhildondesktop1-dev, hildon-control-panel-dev, libgtk2.0-dev, libglib2.0-dev, libgconf2-dev, libosso-dev, libconnui-dev
+Build-Depends: debhelper (>= 5), autotools-dev, autoconf, automake, libtool, libhildon1-dev, libhildondesktop1-dev, hildon-control-panel-dev, libgtk2.0-dev, libglib2.0-dev, libgconf2-dev, libosso-dev, libconnui-dev
 Standards-Version: 3.7.2
 Section: x11
 
