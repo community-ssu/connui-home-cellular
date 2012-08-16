@@ -17,6 +17,7 @@ Description: Cellular UI operator name home plugin
 
 Package: operator-name-cbs-widget
 Architecture: armel
+Section: user/desktop
 Depends: connui-home-cellular
 Description: Transitional package
  This dummy package is provided for a smooth transition to the connui-home-cellular.
