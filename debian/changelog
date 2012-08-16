@@ -1,3 +1,12 @@
+operator-name-cbs-widget (3.1) unstable; urgency=low
+
+  * Add support for custom operator names
+  * Add missing build dependency
+  * Add debian/shlibs.local file
+  * Move package operator-name-cbs-widget to user section
+
+ -- Pali Rohár <pali.rohar@gmail.com>  Thu, 16 Aug 2012 08:16:03 +0200
+
 operator-name-cbs-widget (3.0) unstable; urgency=low
 
   * Rename deb package to connui-home-cellular which is name of original deb package
