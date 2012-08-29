@@ -32,8 +32,10 @@ case "$1" in
             rm -f /usr/lib/hildon-desktop/connui-cellular-operator-home-item.so
             dpkg-divert --package operator-name-cbs-widget --rename --remove /usr/lib/hildon-desktop/connui-cellular-operator-home-item.so
         fi
-        # Remove bad gconf channel key path
+        # Remove bad gconf keys
         su user -c 'run-standalone.sh gconftool -u /channel'
+        su user -c 'run-standalone.sh gconftool -u /apps/connui-cellular/channel'
+        su user -c 'run-standalone.sh gconftool -u /apps/connui-cellular/cbsms_display_enabled'
     ;;
 
     abort-upgrade|abort-remove|abort-deconfigure)
