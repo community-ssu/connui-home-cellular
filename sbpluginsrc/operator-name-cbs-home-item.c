@@ -64,6 +64,7 @@ struct _OperatorNameCBSHomeItemPrivate
 	gchar* operator_name;
 	gchar* service_provider_name;
 	gchar* cell_name;
+	gboolean show_service_provider;
 	gchar reg_status;
 	gchar rat_name;
 	gchar *operator_code;
@@ -92,8 +93,10 @@ static char *get_timestamp()
 static void update_widget(OperatorNameCBSHomeItemPrivate *priv)
 {
 	const char *display_name = NULL;
+	const char *service_name = NULL;
 	const char *cell_name = NULL;
-	gchar *name = NULL;
+	char *name = NULL;
+	int len = 0;
 
 	if (priv->status < 0)
 		display_name = NULL;
@@ -106,15 +109,55 @@ static void update_widget(OperatorNameCBSHomeItemPrivate *priv)
 	else if (priv->service_provider_name && priv->service_provider_name[0])
 		display_name = priv->service_provider_name;
 
+	if (priv->status < 0 || priv->service_provider_name == display_name)
+		service_name = NULL;
+	else if (priv->show_service_provider && priv->service_provider_name[0])
+		service_name = priv->service_provider_name;
+
 	if (priv->status < 0)
 		cell_name = NULL;
 	else if (priv->cell_name && priv->cell_name[0] && cbsms)
 		cell_name = priv->cell_name;
 
-	name = g_strdup_printf("%s%s%s", display_name ? display_name : "", (display_name && cell_name) ? " " : "", cell_name ? cell_name : "");
+	if (display_name)
+		len += strlen(display_name);
+
+	if (service_name)
+		len += strlen(service_name);
+
+	if (cell_name)
+		len += strlen(cell_name);
+
+	name = calloc(1, len+6);
 
 	if (!name)
 		return;
+
+	len = 0;
+
+	if (display_name)
+	{
+		if (len) { name[len] = ' '; name[len+1] = ' '; len += 2; }
+		len += sprintf(name+len, "%s", display_name);
+		while (len && name[len-1] == ' ') --len;
+		name[len] = 0;
+	}
+
+	if (service_name)
+	{
+		if (len) { name[len] = ' '; name[len+1] = ' '; len += 2; }
+		len += sprintf(name+len, "%s", service_name);
+		while (len && name[len-1] == ' ') --len;
+		name[len] = 0;
+	}
+
+	if (cell_name)
+	{
+		if (len) { name[len] = ' '; name[len+1] = ' '; len += 2; }
+		len += sprintf(name+len, "%s", cell_name);
+		while (len && name[len-1] == ' ') --len;
+		name[len] = 0;
+	}
 
 	if (namelog)
 	{
@@ -126,7 +169,7 @@ static void update_widget(OperatorNameCBSHomeItemPrivate *priv)
 	gtk_label_set_text(GTK_LABEL(priv->label), name);
 	gtk_widget_queue_draw(priv->label);
 
-	g_free(name);
+	free(name);
 }
 
 static DBusHandlerResult
@@ -617,17 +660,14 @@ static void get_operator_name(OperatorNameCBSHomeItemPrivate *priv,struct networ
 				{
 					FILE *f = fopen("/home/user/opername.log","at");
 					fprintf(f,"%sservice provider name fail match\n",get_timestamp());
-					fprintf(f,"%schange operator name to '<operator> <provider>':'%s %s'\n",get_timestamp(), priv->operator_name, priv->service_provider_name);
 					fclose(f);
 				}
-				gchar * oper = g_strdup_printf("%s %s",priv->operator_name,priv->service_provider_name);
-				g_free(priv->operator_name);
-				priv->operator_name = oper;
+				priv->show_service_provider = TRUE;
 				update_widget(priv);
 			}
 		}
 	}
-	else
+	else if (priv->service_provider_name)
 	{
 		if (namelog)
 		{
@@ -655,12 +695,9 @@ static void get_operator_name(OperatorNameCBSHomeItemPrivate *priv,struct networ
 		{
 			FILE *f = fopen("/home/user/opername.log","at");
 			fprintf(f,"%sservice provider name fail match network fail\n",get_timestamp());
-			fprintf(f,"%schange operator name to '<operator> <provider>':'%s %s'\n",get_timestamp(), priv->operator_name, priv->service_provider_name);
 			fclose(f);
 		}
-		gchar * oper = g_strdup_printf("%s %s",priv->operator_name,priv->service_provider_name);
-		g_free(priv->operator_name);
-		priv->operator_name = oper;
+		priv->show_service_provider = TRUE;
 		update_widget(priv);
 	}
 }
