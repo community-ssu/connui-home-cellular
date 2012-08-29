@@ -189,6 +189,35 @@ _dbus_message_filter_func(DBusConnection* connection,
 				g_free(utf8);
 				g_slist_free(l);
 			}
+			else if(dbus_message_is_signal(message,"Phone.Net","operator_name_change"))
+			{
+				char network;
+				char *operator_name;
+				char *unknown;
+				int operator_code;
+				int country_code;
+				dbus_message_get_args(message,NULL,DBUS_TYPE_BYTE,&network_service_status,
+								DBUS_TYPE_STRING,&operator_name,
+								DBUS_TYPE_STRING,&unknown,
+								DBUS_TYPE_UINT32,&operator_code,
+								DBUS_TYPE_UINT32,&country_code,
+								DBUS_TYPE_INVALID);
+				if (namelog)
+				{
+					FILE *f = fopen("/home/user/opername.log","at");
+					fprintf(f,"%sset operator name %s\n",get_timestamp(),operator_name);
+					fclose(f);
+				}
+				g_free(priv->display_name);
+				priv->display_name = g_strdup(operator_name);
+				gchar *dn = priv->display_name;
+				if (priv->custom_name)
+				{
+					dn = priv->custom_name;
+				}
+				gtk_label_set_text(GTK_LABEL(priv->label), dn);
+				gtk_widget_queue_draw(priv->label);
+			}
 		}
 	}
 	return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
@@ -392,6 +421,7 @@ _set_dbus_filter_func(DBusConnection* conn, OperatorNameCBSHomeItem* plugin)
 	if(conn)
 	{
 		dbus_bus_add_match(conn,"type='signal',interface='Phone.SMS'", NULL);
+		dbus_bud_add_match(conn,"type='signal',interface='Phone.Net'", NULL);
 		dbus_connection_add_filter(conn, _dbus_message_filter_func, plugin, NULL);
 	}
 }
