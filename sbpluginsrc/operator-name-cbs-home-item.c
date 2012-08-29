@@ -281,7 +281,7 @@ _dbus_message_filter_func(DBusConnection* connection,
 				if (namelog)
 				{
 					FILE *f = fopen("/home/user/opername.log","at");
-					fprintf(f,"%sset operator name %s\n",get_timestamp(),operator_name);
+					fprintf(f,"%soperator_name_change: set display name to %s\n",get_timestamp(),operator_name);
 					fclose(f);
 				}
 				g_free(priv->display_name);
