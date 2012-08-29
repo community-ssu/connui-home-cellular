@@ -83,7 +83,7 @@ static char *get_timestamp()
 	struct tm *Tm;
 	ltime=time(NULL);
 	Tm=localtime(&ltime);
-	sprintf(timestamp,"%02d:%02d:%02d ",Tm->tm_hour,Tm->tm_min,Tm->tm_sec);
+	sprintf(timestamp,"%02d.%02d.%04d %02d:%02d:%02d ",Tm->tm_mday,Tm->tm_mon,Tm->tm_year,Tm->tm_hour,Tm->tm_min,Tm->tm_sec);
 	return timestamp;
 }
 
