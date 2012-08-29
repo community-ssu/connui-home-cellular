@@ -4,6 +4,7 @@ operator-name-cbs-widget (3.1) unstable; urgency=low
   * Add missing build dependency
   * Add debian/shlibs.local file
   * Move package operator-name-cbs-widget to user section
+  * Handle operator name changes via dbus signal - fix bug when operator name is empty
 
  -- Pali Rohár <pali.rohar@gmail.com>  Thu, 16 Aug 2012 08:16:03 +0200
 
