@@ -127,7 +127,10 @@ _dbus_message_filter_func(DBusConnection* connection,
 				memcpy(&pdu[6],data,count);
 				ret = cbs_decode(pdu,88,&cbs);
 				l = g_slist_append(NULL, &cbs);
-				utf8 = cbs_decode_text(l, lang);
+				if (l && l[0])
+					utf8 = cbs_decode_text(l, lang);
+				else
+					utf8 = "";
 				if (cbs.message_identifier == channel && strncmp(utf8, "@@@@@", 5) != 0)
 				{
 					g_free(priv->cell_name);
