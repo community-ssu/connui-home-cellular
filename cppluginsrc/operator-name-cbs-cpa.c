@@ -59,6 +59,10 @@ osso_return_t execute(osso_context_t *osso,
 	gchar* name = gconf_client_get_string(gconf_client, OPERATOR_NAME_CUSTOM_NAME,NULL);
 	if (!name)
 		name = "";
+	gboolean cbsms = TRUE;
+	GConfValue * val = gconf_client_get(gconf_client, OPERATOR_NAME_CBSMS_ENABLED, NULL);
+	if (val && val->type == GCONF_VALUE_BOOL)
+		cbsms = gconf_value_get_bool(val);
 
 	gtk_button_set_label(GTK_BUTTON(cbsms_enabled),"Cell Broadcast Enabled");
 	gtk_button_set_label(GTK_BUTTON(custom_enabled),"Custom Operator Enabled");
@@ -67,7 +71,7 @@ osso_return_t execute(osso_context_t *osso,
 	gtk_entry_set_text(GTK_ENTRY(custom_name),name);
 //	gtk_button_set_label(GTK_BUTTON(log_enabled),"Logging Enabled");
 //	gtk_button_set_label(GTK_BUTTON(name_log_enabled),"Name Logging Enabled");
-	hildon_check_button_set_active(HILDON_CHECK_BUTTON(cbsms_enabled),gconf_client_get_bool(gconf_client, OPERATOR_NAME_CBSMS_ENABLED, NULL));
+	hildon_check_button_set_active(HILDON_CHECK_BUTTON(cbsms_enabled),cbsms);
 	hildon_check_button_set_active(HILDON_CHECK_BUTTON(custom_enabled),gconf_client_get_bool(gconf_client, OPERATOR_NAME_CUSTOM_ENABLED, NULL));
 //	hildon_check_button_set_active(HILDON_CHECK_BUTTON(log_enabled),gconf_client_get_bool(gconf_client, OPERATOR_NAME_LOGGING_ENABLED, NULL));
 //	hildon_check_button_set_active(HILDON_CHECK_BUTTON(name_log_enabled),gconf_client_get_bool(gconf_client, OPERATOR_NAME_NAME_LOGGING_ENABLED, NULL));
