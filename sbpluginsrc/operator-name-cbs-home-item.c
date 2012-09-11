@@ -686,9 +686,12 @@ static void get_operator_name(OperatorNameCBSHomeItemPrivate *priv,struct networ
 		}
 		else if (priv->service_provider_name && !strcasecmp(priv->operator_name,priv->service_provider_name))
 		{
-			FILE *f = fopen("/home/user/opername.log","at");
-			fprintf(f,"%sservice provider name match\n",get_timestamp());
-			fclose(f);
+			if (namelog)
+			{
+				FILE *f = fopen("/home/user/opername.log","at");
+				fprintf(f,"%sservice provider name match\n",get_timestamp());
+				fclose(f);
+			}
 			return;
 		}
 		if (namelog)
