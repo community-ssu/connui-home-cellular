@@ -1,6 +1,14 @@
+connui-home-cellular (3.2) unstable; urgency=low
+
+  * Removed transitional package operator-name-cbs-widget
+  * Renamed source package to connui-home-cellular
+
+ -- Pali Rohár <pali.rohar@gmail.com>  Thu, 13 Sep 2012 09:56:14 +0200
+
 operator-name-cbs-widget (3.1.1) unstable; urgency=low
 
   * Handle operator name changes via dbus signal - fix bug when operator name is empty
+
  -- Pali Rohár <pali.rohar@gmail.com>  Thu, 16 Aug 2012 08:16:03 +0200
 
 operator-name-cbs-widget (3.1) unstable; urgency=low
