@@ -114,6 +114,9 @@ static void update_widget(OperatorNameCBSHomeItemPrivate *priv)
 	else if (priv->show_service_provider && priv->service_provider_name[0])
 		service_name = priv->service_provider_name;
 
+	if (display_name && service_name && !strcasecmp(display_name, service_name))
+		service_name = NULL;
+
 	if (priv->status < 0)
 		cell_name = NULL;
 	else if (priv->cell_name && priv->cell_name[0] && cbsms)
