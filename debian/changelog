@@ -2,6 +2,7 @@ connui-home-cellular (3.2) unstable; urgency=low
 
   * Removed transitional package operator-name-cbs-widget
   * Renamed source package to connui-home-cellular
+  * If displayname and servicename are same, do not show name twice
 
  -- Pali Rohár <pali.rohar@gmail.com>  Thu, 13 Sep 2012 09:56:14 +0200
 
