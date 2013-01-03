@@ -1,3 +1,13 @@
+connui-home-cellular (3.2.1) unstable; urgency=low
+
+  * Add logging to update_widget to log how it determines which names to use
+  * Do not listen to operator_name_change as connui_cell_net_status_register
+    does that for you
+  * Correct typo in calculation of operator name
+  * Use service provider name when service_provider_name_type is != 1
+
+ -- Jonathan Wilson <jfwfreo@tpgi.com.au>  Thu, 03 2013 10:57:21 +0100
+
 connui-home-cellular (3.2) unstable; urgency=low
 
   * Removed transitional package operator-name-cbs-widget
