@@ -99,23 +99,87 @@ static void update_widget(OperatorNameCBSHomeItemPrivate *priv)
 	int len = 0;
 
 	if (priv->status < 0)
+        {
+		if (namelog)
+		{
+			FILE *f = fopen("/home/user/opername.log","at");
+			fprintf(f,"%sset display name null status < 0'\n",get_timestamp());
+			fclose(f);
+		}
 		display_name = NULL;
+        }
 	else if (priv->custom_name && custom)
+        {
+		if (namelog)
+		{
+			FILE *f = fopen("/home/user/opername.log","at");
+			fprintf(f,"%sset display name custom '%s'\n",get_timestamp(),priv->custom_name);
+	 		fclose(f);
+		}
 		display_name = priv->custom_name;
+        }
 	else if (priv->display_name && priv->display_name[0])
+        {
+		if (namelog)
+		{
+			FILE *f = fopen("/home/user/opername.log","at");
+			fprintf(f,"%sset display name display_name '%s'\n",get_timestamp(),priv->display_name);
+	 		fclose(f);
+		}
 		display_name = priv->display_name;
+        }
 	else if (priv->operator_name && priv->operator_name[0])
+        {
+		if (namelog)
+		{
+			FILE *f = fopen("/home/user/opername.log","at");
+			fprintf(f,"%sset display name operator_name '%s'\n",get_timestamp(),priv->operator_name);
+	  		fclose(f);
+		}
 		display_name = priv->operator_name;
+        }
 	else if (priv->service_provider_name && priv->service_provider_name[0])
+        {
+		if (namelog)
+		{
+			FILE *f = fopen("/home/user/opername.log","at");
+			fprintf(f,"%sset display name service_provider_name '%s'\n",get_timestamp(),priv->service_provider_name);
+	 		fclose(f);
+		}
 		display_name = priv->service_provider_name;
+        }
 
 	if (priv->status < 0 || priv->service_provider_name == display_name)
+        {
+		if (namelog)
+		{
+			FILE *f = fopen("/home/user/opername.log","at");
+			fprintf(f,"%sset service name null spn = dn status < 0\n",get_timestamp());
+	  		fclose(f);
+		}
 		service_name = NULL;
+        }
 	else if (priv->show_service_provider && priv->service_provider_name[0])
+        {
+		if (namelog)
+		{
+			FILE *f = fopen("/home/user/opername.log","at");
+			fprintf(f,"%sset service name service_provider_name '%s'\n",get_timestamp(),priv->service_provider_name);
+	   		fclose(f);
+		}
 		service_name = priv->service_provider_name;
+        }
 
 	if (display_name && service_name && !strcasecmp(display_name, service_name))
+	{
+		if (namelog)
+		{
+			FILE *f = fopen("/home/user/opername.log","at");
+			fprintf(f,"%sset service name null dn,sn strcmp match\n",get_timestamp());
+	  		fclose(f);
+		}
 		service_name = NULL;
+	}
 
 	if (priv->status < 0)
 		cell_name = NULL;
@@ -267,29 +331,6 @@ _dbus_message_filter_func(DBusConnection* connection,
 				}
 				g_free(utf8);
 				g_slist_free(l);
-			}
-			else if(dbus_message_is_signal(message,"Phone.Net","operator_name_change"))
-			{
-				char network_service_status;
-				char *operator_name;
-				char *unknown;
-				int operator_code;
-				int country_code;
-				dbus_message_get_args(message,NULL,DBUS_TYPE_BYTE,&network_service_status,
-								DBUS_TYPE_STRING,&operator_name,
-								DBUS_TYPE_STRING,&unknown,
-								DBUS_TYPE_UINT32,&operator_code,
-								DBUS_TYPE_UINT32,&country_code,
-								DBUS_TYPE_INVALID);
-				if (namelog)
-				{
-					FILE *f = fopen("/home/user/opername.log","at");
-					fprintf(f,"%soperator_name_change: set display name to %s\n",get_timestamp(),operator_name);
-					fclose(f);
-				}
-				g_free(priv->display_name);
-				priv->display_name = g_strdup(operator_name);
-				update_widget(priv);
 			}
 		}
 	}
@@ -452,7 +493,6 @@ _set_dbus_filter_func(DBusConnection* conn, OperatorNameCBSHomeItem* plugin)
 	if(conn)
 	{
 		dbus_bus_add_match(conn,"type='signal',interface='Phone.SMS'", NULL);
-		dbus_bus_add_match(conn,"type='signal',interface='Phone.Net'", NULL);
 		dbus_connection_add_filter(conn, _dbus_message_filter_func, plugin, NULL);
 	}
 }
@@ -594,7 +634,7 @@ static void get_operator_name(OperatorNameCBSHomeItemPrivate *priv,struct networ
 		if (!priv->operator_name || strcmp(priv->operator_name,operator))
 		{
 			g_free(priv->operator_name);
-			priv->operator_name = g_strdup(state->operator_name);
+			priv->operator_name = g_strdup(operator);
 			if (namelog)
 			{
 				FILE *f = fopen("/home/user/opername.log","at");
@@ -639,10 +679,13 @@ static void get_operator_name(OperatorNameCBSHomeItemPrivate *priv,struct networ
 		}
 		if (!priv->service_provider_name_type & 1)
 		{
+			g_free(priv->operator_name);
+			priv->operator_name = g_strdup(priv->service_provider_name);
 			if (namelog)
 			{
 				FILE *f = fopen("/home/user/opername.log","at");
 				fprintf(f,"%sservice provider name type 1\n",get_timestamp());
+				fprintf(f,"%spriv->operator_name changed to %s\n",get_timestamp(),priv->operator_name);
 				fclose(f);
 			}
 		}
