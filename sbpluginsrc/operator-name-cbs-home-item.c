@@ -67,7 +67,7 @@ struct _OperatorNameCBSHomeItemPrivate
 	gboolean show_service_provider;
 	gchar reg_status;
 	gchar rat_name;
-	gchar *operator_code;
+	gchar *operator_state_name;
 	int status;
 	gboolean flightmode;
 	guint32 service_provider_name_type;
@@ -358,8 +358,8 @@ static void widget_flightmode_cb(gboolean offline, gpointer user_data)
 				g_free(priv->display_name);
 				priv->display_name = g_strdup("");
 				priv->reg_status = -1;
-				g_free(priv->operator_code);
-				priv->operator_code = g_strdup("");
+				g_free(priv->operator_state_name);
+				priv->operator_state_name = g_strdup("NULL");
 				priv->status = -1;
 				priv->rat_name = -1;
 				priv->cell_id = -1;
@@ -407,8 +407,8 @@ static void widget_net_status_cb(struct network_state *state, gpointer user_data
 				priv->cell_name = g_strdup("");
 				g_free(priv->display_name);
 				priv->display_name = g_strdup("");
-				g_free(priv->operator_code);
-				priv->operator_code = g_strdup("");
+				g_free(priv->operator_state_name);
+				priv->operator_state_name = g_strdup("NULL");
 				priv->status = -1;
 				priv->rat_name = -1;
 				priv->cell_id = -1;
@@ -431,16 +431,16 @@ static void widget_net_status_cb(struct network_state *state, gpointer user_data
 					priv->rat_name = -1;
 					update_widget(priv);
 				}
-				if (state->network->operator_code && strcmp(state->network->operator_code,priv->operator_code) && priv->reg_status < 3 && priv->status < 2)
+				if (state->operator_name && strcmp(state->operator_name,priv->operator_state_name) && priv->reg_status < 3 && priv->status < 2)
 				{
 					if (cbslog)
 					{
 						FILE *f = fopen("/home/user/cbsms.log","at");
-						fprintf(f,"%soperator_code clear cell name\n",get_timestamp());
+						fprintf(f,"%soperator_name clear cell name\n",get_timestamp());
 						fclose(f);
 					}
-					g_free(priv->operator_code);
-					priv->operator_code = g_strdup(state->network->operator_code);
+					g_free(priv->operator_state_name);
+					priv->operator_state_name = g_strdup(state->operator_name);
 					get_operator_name(priv,state);
 					g_free(priv->cell_name);
 					priv->cell_name = g_strdup("");
@@ -631,7 +631,7 @@ static void get_operator_name(OperatorNameCBSHomeItemPrivate *priv,struct networ
 	}
 	if (operator)
 	{
-		if (!priv->operator_name || strcmp(priv->operator_name,operator))
+		if (!priv->operator_name || !priv->operator_name[0])
 		{
 			g_free(priv->operator_name);
 			priv->operator_name = g_strdup(operator);
@@ -778,7 +778,7 @@ operator_name_cbs_home_item_init(OperatorNameCBSHomeItem* home_item)
 	home_item->priv = OPERATOR_NAME_CBS_HOME_ITEM_GET_PRIVATE(home_item);
 	home_item->priv->cell_name = g_strdup("");
 	home_item->priv->reg_status = -1;
-	home_item->priv->operator_code = g_strdup("");
+	home_item->priv->operator_state_name = g_strdup("NULL");
 	home_item->priv->status = -1;
 	home_item->priv->rat_name = -1;
 	home_item->priv->cell_id = -1;
