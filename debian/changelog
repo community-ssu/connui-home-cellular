@@ -1,3 +1,9 @@
+connui-home-cellular (3.2.3) unstable; urgency=low
+
+  * Fix an issue with operator name display
+
+ -- Jonathan Wilson <jfwfreo@tpgi.com.au>  Thu, 19 Nov 2015 03:24:59 -0500
+
 connui-home-cellular (3.2.2) unstable; urgency=low
   * Fix some issues with operator name display
 

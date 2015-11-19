@@ -677,7 +677,7 @@ static void get_operator_name(OperatorNameCBSHomeItemPrivate *priv,struct networ
 			fprintf(f,"%sservice provider name network match %s type %d\n",get_timestamp(),priv->service_provider_name,priv->service_provider_name_type);
 			fclose(f);
 		}
-		if (!priv->service_provider_name_type & 1)
+		if (!(priv->service_provider_name_type & 1))
 		{
 			g_free(priv->operator_name);
 			priv->operator_name = g_strdup(priv->service_provider_name);
