@@ -11,7 +11,7 @@ AM_PATH_GLIB_2_0([2.16.0])
 AC_PROG_INSTALL
 AM_PROG_LIBTOOL
 
-PKG_CHECK_MODULES([OPERATORNAMECBSHOMEITEM], [glib-2.0 gobject-2.0 cairo dbus-glib-1 libosso gconf-2.0 gtk+-2.0 hildon-1 libhildondesktop-1 libconnui])
+PKG_CHECK_MODULES([OPERATORNAMECBSHOMEITEM], [glib-2.0 gobject-2.0 cairo dbus-glib-1 libosso gconf-2.0 gtk+-2.0 hildon-1 libhildondesktop-1 libconnui_cell])
 AC_SUBST([OPERATORNAMECBSHOMEITEM_CFLAGS])
 AC_SUBST([OPERATORNAMECBSHOMEITEM_LIBS])
 
